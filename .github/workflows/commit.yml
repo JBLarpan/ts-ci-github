@@ -31,6 +31,8 @@ env:
 jobs:
   run_commit_api: 
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checking ${{ env.TS_ENV_NAME }} branch
         uses: actions/checkout@v4
@@ -48,3 +50,9 @@ jobs:
       - name: Run the GIT COMMIT command
         #run: "cs_tools tools git branches commit --tag ${{ env.TS_OBJECT_TAG }} --comment \"${{ env.TS_COMMIT_MESSAGE }}\" --org ${{ env.TS_SOURCE_ORG_ID }} --config ENV:"
         run: "cs_tools tools git branches commit --metadata-types ANSWER --comment \"${{ env.TS_COMMIT_MESSAGE }}\" --org ${{ env.TS_SOURCE_ORG_ID }} --config ENV:"
+
+      - name: Push changes to GitHub
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git push origin ${{ env.TS_ENV_NAME }}
